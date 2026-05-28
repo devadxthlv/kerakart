@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}KeraKart — Your Basket{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="cart-page-header">
+        <h1 class="cart-page-title">Your Basket</h1>
+        <a href="{% url 'store:product_list' %}" class="link-text">Continue shopping &rarr;</a>
+    </div>
+
+    {% if cart_items %}
+        <div class="cart-layout">
+
+            <!-- Cart Items -->
+            <div>
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    <div class="cart-item-info">
+                                        <div class="cart-item-img">
+                                            <img src="{% if item.slug == 'raw-coconut' %}https://images.unsplash.com/photo-1589883661923-6476cb0ae9f2?w=200&q=80
+                                                      {% elif item.slug == 'raw-banana-nendran' %}https://images.unsplash.com/photo-1566393028639-d108a42c46a7?w=200&q=80
+                                                      {% elif item.slug == 'tapioca-kappa' %}https://images.unsplash.com/photo-1590005354167-6da97870c913?w=200&q=80
+                                                      {% elif item.slug == 'jackfruit' %}https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=200&q=80
+                                                      {% elif item.slug == 'curry-leaves' %}https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200&q=80
+                                                      {% elif item.slug == 'nendran-banana' %}https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200&q=80
+                                                      {% elif item.slug == 'mango' %}https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&q=80
+                                                      {% elif item.slug == 'pineapple' %}https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=200&q=80
+                                                      {% elif item.slug == 'banana-chips' %}https://images.unsplash.com/photo-1622484211148-717fa0f55734?w=200&q=80
+                                                      {% elif item.slug == 'murukku' %}https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=200&q=80
+                                                      {% elif item.slug == 'achappam' %}https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=200&q=80
+                                                      {% elif item.slug == 'unniyappam' %}https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=200&q=80
+                                                      {% elif item.slug == 'black-pepper' %}https://images.unsplash.com/photo-1508746829417-e6f548d8d6ed?w=200&q=80
+                                                      {% elif item.slug == 'cardamom' %}https://images.unsplash.com/photo-1544831209-66c3a116b472?w=200&q=80
+                                                      {% elif item.slug == 'turmeric-powder' %}https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200&q=80
+                                                      {% else %}https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&q=80
+                                                      {% endif %}" alt="{{ item.name }}">
+                                        </div>
+                                        <div>
+                                            <a href="{% url 'store:product_detail' item.slug %}" class="cart-item-name">{{ item.name }}</a>
+                                            <p class="cart-item-sub">{{ item.unit }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>₹{{ item.price }}</td>
+                                <td>
+                                    <span class="cart-qty-val">{{ item.qty }}</span>
+                                </td>
+                                <td class="cart-item-total">₹{{ item.total }}</td>
+                                <td>
+                                    <form action="{% url 'cart:remove_from_cart' item.product_id %}" method="post" class="inline-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="cart-remove-btn">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Summary -->
+            <div class="cart-summary">
+                <h2 class="summary-title">Order Summary</h2>
+
+                <div class="summary-row">
+                    <span>Items</span>
+                    <strong>{{ cart_count }}</strong>
+                </div>
+                <div class="summary-row free-delivery">
+                    <span>Delivery</span>
+                    <strong>Free</strong>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>₹{{ grand_total }}</span>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; margin-top: 24px;"
+                    onclick="alert('Checkout: This project does not include a live payment integration. Thank you for shopping with KeraKart!');">
+                    Proceed to Checkout
+                </button>
+
+                <p class="checkout-note">Organic produce sourced from Kerala cooperative farms. Free standard delivery applies to all orders.</p>
+            </div>
+
+        </div>
+
+    {% else %}
+        <div class="empty-state" style="padding-top: 80px;">
+            <h2>Your basket is empty</h2>
+            <p>Browse KeraKart's farm-fresh catalog and add items to your basket.</p>
+            <a href="{% url 'store:product_list' %}" class="btn btn-primary">Shop Fresh Produce</a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

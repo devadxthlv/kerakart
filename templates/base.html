@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KeraKart — Kerala's Farm Fresh Produce{% endblock %}</title>
+    <meta name="description" content="{% block meta_desc %}Fresh organic produce and traditional Kerala snacks delivered to your door.{% endblock %}">
+
+    <!-- Google Fonts: Cormorant Garant + DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@400;500&family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome (minimal usage) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="site-header">
+        <div class="container navbar-inner">
+
+            <!-- Logo -->
+            <a href="{% url 'store:home' %}" class="logo">
+                Kera<span class="logo-accent">Kart</span>
+            </a>
+
+            <!-- Nav Links -->
+            <nav class="site-nav">
+                <a href="{% url 'store:home' %}" class="nav-link">Home</a>
+                <a href="{% url 'store:product_list' %}" class="nav-link">Shop</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="nav-actions">
+                <a href="{% url 'cart:cart_detail' %}" class="cart-link">
+                    Basket
+                    <span class="cart-count">{{ cart_count|default:0 }}</span>
+                </a>
+
+                {% if user.is_authenticated %}
+                    <span class="auth-sep"></span>
+                    <span class="user-greeting">{{ user.username }}</span>
+                    {% if user.is_staff %}
+                        <a href="{% url 'admin:index' %}" class="btn btn-sm btn-outline">Admin</a>
+                    {% endif %}
+                    <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-logout">Sign out</button>
+                    </form>
+                {% else %}
+                    <span class="auth-sep"></span>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-sm btn-outline">Sign in</a>
+                    <a href="{% url 'accounts:register' %}" class="btn btn-sm btn-primary">Register</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Message Alerts -->
+    {% if messages %}
+        <div class="container messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <span>{{ message }}</span>
+                    <button class="alert-close" onclick="this.parentElement.style.display='none';">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Page Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+
+                <div class="footer-brand-col">
+                    <a href="{% url 'store:home' %}" class="footer-logo">KeraKart</a>
+                    <p class="footer-tagline">Farm-fresh organic produce and authentic Kerala snacks, sourced directly from God's Own Country.</p>
+                    <div class="footer-socials">
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="footer-col-title">Catalog</h5>
+                    <ul class="footer-nav-list">
+                        <li><a href="{% url 'store:product_list' %}">All Products</a></li>
+                        <li><a href="{% url 'store:product_list' %}?category=farm-fresh">Farm Fresh</a></li>
+                        <li><a href="{% url 'store:product_list' %}?category=fruits">Fruits</a></li>
+                        <li><a href="{% url 'store:product_list' %}?category=snacks">Snacks</a></li>
+                        <li><a href="{% url 'store:product_list' %}?category=spices">Spices</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="footer-col-title">Account</h5>
+                    <ul class="footer-nav-list">
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'cart:cart_detail' %}">My Basket</a></li>
+                            {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">Admin Panel</a></li>{% endif %}
+                        {% else %}
+                            <li><a href="{% url 'accounts:login' %}">Sign In</a></li>
+                            <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="footer-col-title">Contact</h5>
+                    <ul class="footer-contact-list">
+                        <li>support@kerakart.com</li>
+                        <li>+91 471 234 5678</li>
+                        <li>Kochi, Kerala 682001</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; 2025 KeraKart. All rights reserved.</span>
+                <span>Fresh from Kerala's farms to your door.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroBg = document.querySelector('.hero-bg');
+            if (heroBg) {
+                setTimeout(() => heroBg.classList.add('loaded'), 100);
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (nav) {
+                nav.classList.toggle('nav-scrolled', window.scrollY > 60);
+            }
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(el => {
+                if (el.isIntersecting) {
+                    el.target.classList.add('visible');
+                    observer.unobserve(el.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+

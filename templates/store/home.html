@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}KeraKart — Fresh from Kerala's Farms{% endblock %}
+{% block meta_desc %}Buy fresh organic coconuts, bananas, spices, and traditional Kerala snacks delivered to your door.{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-tag">Organic · Farm Fresh · Kerala</span>
+    <h1 class="hero-title">
+      From the farms of<br>
+      <em>God's Own Country</em>
+    </h1>
+    <p class="hero-sub">
+      Fresh coconuts, ripe Nendran bananas, hand-picked
+      spices and crispy traditional snacks — sourced
+      directly from cooperative farms across Kerala.
+    </p>
+    <a href="{% url 'store:product_list' %}" class="hero-cta">
+      Shop Fresh Produce
+    </a>
+  </div>
+</section>
+
+
+<!-- Divider -->
+<div style="border-top: 1px solid var(--border);"></div>
+
+<!-- Categories -->
+<div class="container">
+    <section class="section-block">
+        <div class="section-row section-header fade-up">
+            <h2 class="section-title">Shop by Category</h2>
+            <a href="{% url 'store:product_list' %}" class="link-text">All products &rarr;</a>
+        </div>
+
+        <div class="categories-strip">
+            <a href="{% url 'store:product_list' %}?category=farm-fresh" class="category-tile cat-card fade-up" style="transition-delay: 0ms">
+                <div class="category-tile-img">
+                    <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=80" alt="Farm Fresh">
+                </div>
+                <div class="category-tile-label">Farm Fresh</div>
+            </a>
+            <a href="{% url 'store:product_list' %}?category=fruits" class="category-tile cat-card fade-up" style="transition-delay: 100ms">
+                <div class="category-tile-img">
+                    <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&q=80" alt="Fruits">
+                </div>
+                <div class="category-tile-label">Fruits</div>
+            </a>
+            <a href="{% url 'store:product_list' %}?category=snacks" class="category-tile cat-card fade-up" style="transition-delay: 200ms">
+                <div class="category-tile-img">
+                    <img src="https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&q=80" alt="Snacks">
+                </div>
+                <div class="category-tile-label">Snacks</div>
+            </a>
+            <a href="{% url 'store:product_list' %}?category=spices" class="category-tile cat-card fade-up" style="transition-delay: 300ms">
+                <div class="category-tile-img">
+                    <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=80" alt="Spices">
+                </div>
+                <div class="category-tile-label">Spices</div>
+            </a>
+        </div>
+    </section>
+</div>
+
+<!-- Divider -->
+<div style="border-top: 1px solid var(--border);"></div>
+
+<!-- Featured Products -->
+<div class="container">
+    <section class="section-block">
+        <div class="section-row section-header fade-up">
+            <h2 class="section-title">Featured Produce</h2>
+            <a href="{% url 'store:product_list' %}" class="link-text">View full catalog &rarr;</a>
+        </div>
+
+        <div class="products-grid">
+            {% for product in featured_products %}
+                <div class="product-card prod-card fade-up" style="transition-delay: {{ forloop.counter0 }}00ms">
+                    {% if product.stock == 0 %}
+                        <span class="sold-out-badge">Sold Out</span>
+                    {% endif %}
+
+                    <div class="product-card-img">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80" alt="{{ product.name }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="product-card-body">
+                        <span class="product-card-cat">{{ product.category.name }}</span>
+                        <a href="{% url 'store:product_detail' product.slug %}" class="product-card-name">{{ product.name }}</a>
+                        <div class="product-card-footer">
+                            <div>
+                                <span class="product-price">₹{{ product.price }}</span>
+                                <span class="product-unit">/ {{ product.unit }}</span>
+                            </div>
+                            {% if product.stock > 0 and product.is_available %}
+                                <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="inline-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn-add">Add</button>
+                                </form>
+                            {% else %}
+                                <button class="btn-add" disabled>Sold out</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <h2>No products yet</h2>
+                    <p>Run migrations and seed data to populate the catalog.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<!-- Divider -->
+<div style="border-top: 1px solid var(--border);"></div>
+
+<!-- Values -->
+<div class="container">
+    <section class="section-block">
+        <p class="eyebrow" style="margin-bottom: 40px;">Why KeraKart</p>
+        <div class="values-grid">
+            <div class="value-item">
+                <div class="value-number">01</div>
+                <h4 class="value-title">Superfast Delivery</h4>
+                <p class="value-desc">From Kerala's farms to your door in hours, not days. Freshness preserved at every step.</p>
+            </div>
+            <div class="value-item">
+                <div class="value-number">02</div>
+                <h4 class="value-title">Farm Direct</h4>
+                <p class="value-desc">Sourced directly from organic cooperative farms across Kochi, Thrissur, and Idukki.</p>
+            </div>
+            <div class="value-item">
+                <div class="value-number">03</div>
+                <h4 class="value-title">Supports Farmers</h4>
+                <p class="value-desc">Every purchase ensures fair wages and steady income for Kerala's traditional farming families.</p>
+            </div>
+            <div class="value-item">
+                <div class="value-number">04</div>
+                <h4 class="value-title">Certified Organic</h4>
+                <p class="value-desc">Zero pesticides, zero compromise. Pure produce you can trust for your family table.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Divider -->
+<div style="border-top: 1px solid var(--border);"></div>
+
+<!-- Contact / CTA -->
+<div class="container">
+    <section class="contact-section">
+        <div class="contact-inner">
+            <div>
+                <h2 class="contact-heading">Ready to taste Kerala's finest?</h2>
+                <p class="contact-sub">From raw coconuts to Idukki cardamom — fresh, organic, and delivered fast.</p>
+            </div>
+            <div class="contact-cta">
+                <a href="{% url 'store:product_list' %}" class="btn btn-primary">Browse the Catalog</a>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-outline">Create an Account</a>
+                {% endif %}
+                <p class="contact-details">
+                    support@kerakart.com<br>
+                    +91 471 234 5678
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
